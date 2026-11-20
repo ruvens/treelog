@@ -1,5 +1,5 @@
 // Offline support: app shell cache-first, map tiles cached as you browse.
-const VERSION = 'treedoc-v2';
+const VERSION = 'treelog-v1';
 const SHELL = [
   './',
   'index.html',
@@ -16,7 +16,7 @@ const SHELL = [
   'vendor/leaflet/images/layers-2x.png',
   'vendor/jszip/jszip.min.js',
 ];
-const TILE_CACHE = 'treedoc-tiles';
+const TILE_CACHE = 'treelog-tiles';
 const TILE_HOSTS = ['server.arcgisonline.com', 'tile.openstreetmap.org', 'geoservices.bayern.de'];
 
 self.addEventListener('install', (e) => {

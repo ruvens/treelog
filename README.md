@@ -1,4 +1,4 @@
-# Treedoc 🌳
+# Treelog 🌳
 
 A small browser app to document the trees on a property:
 exact position, trunk circumference, species, and any number of photos per tree.

@@ -1,6 +1,6 @@
 {
-  "name": "Treedoc – Tree inventory",
-  "short_name": "Treedoc",
+  "name": "Treelog – Tree inventory",
+  "short_name": "Treelog",
   "description": "Tree inventory: position, circumference, species and photos.",
   "start_url": "./",
   "scope": "./",

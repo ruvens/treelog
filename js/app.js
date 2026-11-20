@@ -1,4 +1,4 @@
-/* Treedoc – tree inventory */
+/* Treelog – tree inventory */
 (function () {
   'use strict';
 
@@ -559,12 +559,12 @@
       zip.file(file, p.blob);
       photoMeta.push({ id: p.id, treeId: p.treeId, file, name: p.name, takenAt: p.takenAt, addedAt: p.addedAt, width: p.width, height: p.height });
     }
-    const data = { app: 'treedoc', version: 1, exportedAt: new Date().toISOString(), address: state.address, site: state.site, trees: state.trees, photos: photoMeta };
+    const data = { app: 'treelog', version: 1, exportedAt: new Date().toISOString(), address: state.address, site: state.site, trees: state.trees, photos: photoMeta };
     zip.file('data.json', JSON.stringify(data, null, 2));
     zip.file('trees.csv', toCsv());
     zip.file('trees.geojson', JSON.stringify(toGeoJson(), null, 2));
     const blob = await zip.generateAsync({ type: 'blob' });
-    download(blob, `treedoc-backup-${stamp()}.zip`);
+    download(blob, `treelog-backup-${stamp()}.zip`);
     await DB.setMeta('lastBackup', new Date().toISOString());
     toast(`Backup with ${state.trees.length} trees and ${photos.length} photos created`);
   }
@@ -600,7 +600,7 @@
       const dataFile = zip.file('data.json');
       if (!dataFile) throw new Error('data.json not found in archive');
       const data = JSON.parse(await dataFile.async('string'));
-      if (data.app !== 'treedoc') throw new Error('Not a Treedoc backup');
+      if (data.app !== 'treelog' && data.app !== 'treedoc') throw new Error('Not a Treelog backup');
       let nTrees = 0, nPhotos = 0, skipped = 0;
       for (const t of data.trees || []) {
         const existing = await DB.getTree(t.id);
@@ -726,8 +726,8 @@
 
     // data
     $('#btn-export-zip').addEventListener('click', exportZip);
-    $('#btn-export-csv').addEventListener('click', () => download(new Blob([toCsv()], { type: 'text/csv;charset=utf-8' }), `treedoc-${stamp()}.csv`));
-    $('#btn-export-geojson').addEventListener('click', () => download(new Blob([JSON.stringify(toGeoJson(), null, 2)], { type: 'application/geo+json' }), `treedoc-${stamp()}.geojson`));
+    $('#btn-export-csv').addEventListener('click', () => download(new Blob([toCsv()], { type: 'text/csv;charset=utf-8' }), `treelog-${stamp()}.csv`));
+    $('#btn-export-geojson').addEventListener('click', () => download(new Blob([JSON.stringify(toGeoJson(), null, 2)], { type: 'application/geo+json' }), `treelog-${stamp()}.geojson`));
     $('#import-file').addEventListener('change', (e) => e.target.files[0] && importZip(e.target.files[0]));
     $('#btn-site-set').addEventListener('click', async () => {
       const c = state.map.getCenter();

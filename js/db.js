@@ -3,7 +3,7 @@
 //   photos: { id, treeId, blob, thumb, name, takenAt, width, height }
 //   meta:   { key, value }
 (function () {
-  const DB_NAME = 'treedoc';
+  const DB_NAME = 'treelog';
   const DB_VERSION = 1;
   let dbPromise;
 
