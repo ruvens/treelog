@@ -1,73 +1,73 @@
 # Treelog 🌳
 
-A small browser app to document the trees on a property:
-exact position, trunk circumference, species, and any number of photos per tree.
+Eine kleine Browser-App, um die Bäume auf einem Grundstück zu dokumentieren:
+genauer Standort, Stammumfang, Baumart und beliebig viele Fotos pro Baum.
 
-It is a static web app (plain HTML/CSS/JS, no build step) hosted on GitHub Pages and works
-on phone and desktop, including offline in the garden once it has been opened.
+Es ist eine statische Web-App (reines HTML/CSS/JS, ohne Build-Schritt), gehostet auf GitHub Pages.
+Sie läuft auf Handy und Computer und funktioniert nach dem ersten Öffnen auch offline im Garten.
 
-## Features
+## Funktionen
 
-- **Map** with satellite imagery (Esri), the official Bavarian orthophoto (DOP40) and OpenStreetMap.
-- **Exact positioning**: place a tree with a crosshair on the aerial image, or measure it by GPS.
-  GPS is averaged over 20 s (accuracy-weighted) and the accuracy (± m) is stored with the tree.
-  Coordinates can also be typed in or adjusted later.
-- **Circumference** in cm at 1 m height. Multi-stem trees: enter `45+38+30`; the sum and diameter are computed.
-  Trees ≥ 80 cm are highlighted (threshold of the Munich *Baumschutzverordnung*).
-- **Species** with suggestions (Latin + German names), free text allowed.
-- Height, crown diameter (drawn on the map), condition, survey date, notes.
-- **Photos**: take with the camera or pick several files at once; resized to max. 2400 px; gallery viewer.
-- **List** with search and sorting.
-- **Export**: full backup `.zip` (data.json, CSV, GeoJSON and all photos in folders per tree),
-  CSV for Excel (semicolon-separated, UTF-8), GeoJSON for QGIS. **Import** of backups for moving data between devices.
-- Installable as an app (PWA) and usable offline; viewed map tiles are cached.
+- **Karte** mit Luftbild (Esri), dem amtlichen bayerischen Orthofoto (DOP40) und OpenStreetMap.
+- **Genauer Standort**: Baum mit dem Fadenkreuz auf dem Luftbild setzen oder per GPS messen.
+  Die GPS-Messung wird über 20 s gemittelt (gewichtet nach Genauigkeit); die Genauigkeit (± m) wird mitgespeichert.
+  Koordinaten lassen sich auch eintippen oder später anpassen.
+- **Stammumfang** in cm in 1 m Höhe. Mehrstämmige Bäume: `45+38+30` eingeben, Summe und Durchmesser werden berechnet.
+  Bäume ab 80 cm werden hervorgehoben (Schwelle der Münchner Baumschutzverordnung).
+- **Baumart** mit Vorschlägen (lateinisch + deutsch), freie Eingabe möglich.
+- Höhe, Kronendurchmesser (wird auf der Karte eingezeichnet), Zustand, Aufnahmedatum, Notizen.
+- **Fotos**: mit der Kamera aufnehmen oder mehrere Dateien auf einmal wählen; Verkleinerung auf max. 2400 px; Bildbetrachter.
+- **Liste** mit Suche und Sortierung.
+- **Export**: Komplettsicherung als `.zip` (data.json, CSV, GeoJSON und alle Fotos in Ordnern pro Baum),
+  CSV für Excel (Semikolon, Dezimalkomma, UTF-8), GeoJSON für QGIS. **Import** von Sicherungen, um Daten auf andere Geräte zu übertragen.
+- Als App installierbar (PWA) und offline nutzbar; angesehene Kartenkacheln werden zwischengespeichert.
 
-## Property address
+## Adresse des Grundstücks
 
-The address is not part of the code. Enter it once in the *Data* tab → *Property*;
-it is looked up on the map and stored only in your browser (and in your backups).
+Die Adresse steht nicht im Code. Sie wird einmal im Tab *Daten* → *Grundstück* eingegeben,
+auf der Karte gesucht und nur im Browser (und in den Sicherungen) gespeichert.
 
-## Where is the data stored?
+## Wo werden die Daten gespeichert?
 
-Only **in the browser of the device you use** (IndexedDB). Nothing is uploaded anywhere,
-so the photos of the property stay private even though the app is public.
-Consequences:
+**Nur im Browser des jeweiligen Geräts** (IndexedDB). Es wird nichts hochgeladen,
+die Fotos des Grundstücks bleiben also privat, auch wenn die App öffentlich ist.
+Daraus folgt:
 
-- Make a **Full backup** from the *Data* tab regularly (e.g. into iCloud/Google Drive).
-- To continue on another device, import the backup there.
-- On iPhone, add the app to the home screen ("Share → Add to Home Screen") so Safari doesn't evict the data.
+- Im Tab *Daten* regelmäßig eine **Komplettsicherung** erstellen (z. B. in iCloud/Google Drive ablegen).
+- Um auf einem anderen Gerät weiterzuarbeiten, die Sicherung dort importieren.
+- Auf dem iPhone die App zum Home-Bildschirm hinzufügen („Teilen → Zum Home-Bildschirm“), damit Safari die Daten nicht löscht.
 
-## Deploy on GitHub Pages
+## Veröffentlichen auf GitHub Pages
 
-1. Merge this branch into `main` (or push it to `main`).
-2. In the repository: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-3. The workflow `.github/workflows/pages.yml` publishes the site on every push to `main`
-   (or run it manually under *Actions → Deploy to GitHub Pages → Run workflow*).
-4. The app is then available at `https://ruvens.github.io/treelog/`.
+1. Im Repository: **Settings → Pages → Build and deployment → Source: „Deploy from a branch“**,
+   Branch **`main`**, Ordner **`/ (root)`** → *Save*.
+2. Nach ein bis zwei Minuten ist die App unter `https://ruvens.github.io/treelog/` erreichbar.
+   Jeder Push auf `main` wird automatisch neu veröffentlicht.
 
-Note: GitHub Pages on free accounts requires the repository to be public. The code is public then, the tree data is not (it lives in your browser).
+Hinweis: Mit einem kostenlosen GitHub-Konto muss das Repository dafür öffentlich sein. Öffentlich ist dann nur der Code,
+nicht die Baumdaten (die liegen im Browser).
 
-## Run locally
+## Lokal starten
 
-Any static web server works, e.g.
+Jeder statische Webserver funktioniert, z. B.
 
 ```sh
 python3 -m http.server 8000
-# open http://localhost:8000
+# http://localhost:8000 öffnen
 ```
 
-GPS access needs HTTPS or `localhost`.
+GPS funktioniert nur über HTTPS oder `localhost`.
 
-## Project layout
+## Aufbau
 
 ```
-index.html            UI
-css/app.css           styles
-js/app.js             app logic (map, editor, photos, export/import)
-js/db.js              IndexedDB storage
-js/species.js         species suggestions
-sw.js                 service worker (offline)
+index.html            Oberfläche
+css/app.css           Styles
+js/app.js             App-Logik (Karte, Erfassung, Fotos, Export/Import)
+js/db.js              Speicherung in IndexedDB
+js/species.js         Vorschlagsliste Baumarten
+sw.js                 Service Worker (offline)
 vendor/               Leaflet 1.9.4, JSZip 3.10.1
 ```
 
-Map data: © OpenStreetMap contributors · Imagery © Esri · Orthophoto © Bayerische Vermessungsverwaltung (CC BY 4.0).
+Kartendaten: © OpenStreetMap-Mitwirkende · Luftbild © Esri · Orthofoto © Bayerische Vermessungsverwaltung (CC BY 4.0).

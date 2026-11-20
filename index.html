@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en">
+<html lang="de">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Treelog</title>
-  <meta name="description" content="Tree inventory: position, circumference, species and photos.">
+  <meta name="description" content="Baumkataster: Standort, Stammumfang, Baumart und Fotos.">
   <meta name="theme-color" content="#2f6b3a">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
@@ -18,13 +18,13 @@
       <img src="icons/icon.svg" alt="" width="28" height="28">
       <div>
         <h1>Treelog</h1>
-        <p class="site" id="site-name">Tree inventory</p>
+        <p class="site" id="site-name">Baumkataster</p>
       </div>
     </div>
     <nav class="tabs" role="tablist">
-      <button role="tab" data-view="map" class="active" aria-selected="true">Map</button>
-      <button role="tab" data-view="list" aria-selected="false">List <span id="count" class="badge">0</span></button>
-      <button role="tab" data-view="data" aria-selected="false">Data</button>
+      <button role="tab" data-view="map" class="active" aria-selected="true">Karte</button>
+      <button role="tab" data-view="list" aria-selected="false">Liste <span id="count" class="badge">0</span></button>
+      <button role="tab" data-view="data" aria-selected="false">Daten</button>
     </nav>
   </header>
 
@@ -33,18 +33,18 @@
     <section id="view-map" class="view active">
       <div id="map"></div>
       <div class="map-tools">
-        <button id="btn-locate" class="fab secondary" title="Show my position">◎</button>
-        <button id="btn-site" class="fab secondary" title="Back to property">⌂</button>
+        <button id="btn-locate" class="fab secondary" title="Meinen Standort zeigen">◎</button>
+        <button id="btn-site" class="fab secondary" title="Zurück zum Grundstück">⌂</button>
       </div>
-      <button id="btn-add" class="fab primary add" title="Add tree">＋ Tree</button>
+      <button id="btn-add" class="fab primary add" title="Baum hinzufügen">＋ Baum</button>
       <div id="placing" class="placing hidden">
         <div class="crosshair" aria-hidden="true"></div>
         <div class="placing-bar">
-          <p>Move the map so the crosshair sits on the trunk centre, or use GPS.</p>
+          <p>Karte so verschieben, dass das Fadenkreuz auf der Stammmitte liegt – oder GPS verwenden.</p>
           <div class="row">
-            <button id="btn-place-gps" class="btn">Use GPS (averaged)</button>
-            <button id="btn-place-cancel" class="btn ghost">Cancel</button>
-            <button id="btn-place-ok" class="btn primary">Place here</button>
+            <button id="btn-place-gps" class="btn">GPS verwenden (gemittelt)</button>
+            <button id="btn-place-cancel" class="btn ghost">Abbrechen</button>
+            <button id="btn-place-ok" class="btn primary">Hier setzen</button>
           </div>
         </div>
       </div>
@@ -53,12 +53,12 @@
     <!-- LIST VIEW -->
     <section id="view-list" class="view">
       <div class="list-head">
-        <input id="search" type="search" placeholder="Search number, species, notes…">
+        <input id="search" type="search" placeholder="Suche: Nummer, Art, Notizen…">
         <select id="sort">
-          <option value="number">Sort: number</option>
-          <option value="species">Sort: species</option>
-          <option value="circ-desc">Sort: circumference ↓</option>
-          <option value="updated">Sort: last edited</option>
+          <option value="number">Sortieren: Nummer</option>
+          <option value="species">Sortieren: Baumart</option>
+          <option value="circ-desc">Sortieren: Umfang ↓</option>
+          <option value="updated">Sortieren: zuletzt bearbeitet</option>
         </select>
       </div>
       <div id="summary" class="summary"></div>
@@ -68,37 +68,37 @@
     <!-- DATA VIEW -->
     <section id="view-data" class="view">
       <div class="card">
-        <h2>Backup &amp; export</h2>
-        <p>All data is stored <strong>only in this browser</strong> (IndexedDB). Export a full backup regularly and import it on other devices.</p>
+        <h2>Sicherung &amp; Export</h2>
+        <p>Alle Daten werden <strong>nur in diesem Browser</strong> gespeichert (IndexedDB). Regelmäßig eine Komplettsicherung erstellen – sie lässt sich auch auf anderen Geräten importieren.</p>
         <div class="row wrap">
-          <button id="btn-export-zip" class="btn primary">Full backup (.zip, incl. photos)</button>
-          <button id="btn-export-csv" class="btn">Table (.csv)</button>
+          <button id="btn-export-zip" class="btn primary">Komplettsicherung (.zip, inkl. Fotos)</button>
+          <button id="btn-export-csv" class="btn">Tabelle (.csv)</button>
           <button id="btn-export-geojson" class="btn">GIS (.geojson)</button>
         </div>
       </div>
       <div class="card">
-        <h2>Import backup</h2>
-        <p>Imports a <code>.zip</code> created by "Full backup". Trees with the same ID are overwritten by the newer version.</p>
+        <h2>Sicherung importieren</h2>
+        <p>Importiert eine mit „Komplettsicherung“ erstellte <code>.zip</code>-Datei. Bäume mit gleicher ID werden durch die jeweils neuere Version ersetzt.</p>
         <input id="import-file" type="file" accept=".zip,application/zip">
       </div>
       <div class="card">
-        <h2>Property</h2>
-        <p>The address is stored only in this browser and in your backups.</p>
+        <h2>Grundstück</h2>
+        <p>Die Adresse wird nur in diesem Browser und in deinen Sicherungen gespeichert.</p>
         <div class="row">
-          <input id="site-address" type="text" placeholder="Street no., city" autocomplete="street-address">
-          <button id="btn-site-geocode" class="btn">Find</button>
+          <input id="site-address" type="text" placeholder="Straße Nr., Ort" autocomplete="street-address">
+          <button id="btn-site-geocode" class="btn">Suchen</button>
         </div>
-        <p>Map centre used for "back to property": <span id="site-coords"></span></p>
-        <button id="btn-site-set" class="btn">Use current map centre</button>
+        <p>Kartenmitte für „Zurück zum Grundstück“: <span id="site-coords"></span></p>
+        <button id="btn-site-set" class="btn">Aktuelle Kartenmitte übernehmen</button>
       </div>
       <div class="card">
-        <h2>Storage</h2>
+        <h2>Speicher</h2>
         <p id="storage-info">–</p>
-        <button id="btn-persist" class="btn">Ask browser to keep data permanently</button>
+        <button id="btn-persist" class="btn">Browser bitten, Daten dauerhaft zu behalten</button>
       </div>
       <div class="card danger-zone">
-        <h2>Danger zone</h2>
-        <button id="btn-wipe" class="btn danger">Delete all trees and photos</button>
+        <h2>Gefahrenbereich</h2>
+        <button id="btn-wipe" class="btn danger">Alle Bäume und Fotos löschen</button>
       </div>
     </section>
   </main>
@@ -107,79 +107,79 @@
   <dialog id="editor" class="sheet">
     <form id="tree-form" method="dialog" autocomplete="off">
       <header class="sheet-head">
-        <h2 id="editor-title">Tree</h2>
-        <button type="button" class="icon-btn" data-close aria-label="Close">✕</button>
+        <h2 id="editor-title">Baum</h2>
+        <button type="button" class="icon-btn" data-close aria-label="Schließen">✕</button>
       </header>
       <div class="sheet-body">
         <div class="grid2">
-          <label>Tree no.
-            <input name="number" required inputmode="numeric" placeholder="e.g. 7">
+          <label>Baum-Nr.
+            <input name="number" required inputmode="numeric" placeholder="z. B. 7">
           </label>
-          <label>Date surveyed
+          <label>Aufnahmedatum
             <input name="surveyed" type="date">
           </label>
         </div>
 
-        <label>Species
-          <input name="species" list="species-list" placeholder="e.g. Acer platanoides – Spitz-Ahorn">
+        <label>Baumart
+          <input name="species" list="species-list" placeholder="z. B. Acer platanoides – Spitz-Ahorn">
         </label>
         <datalist id="species-list"></datalist>
 
         <fieldset class="pos">
-          <legend>Position (WGS84)</legend>
+          <legend>Standort (WGS84)</legend>
           <div class="grid2">
-            <label>Latitude <input name="lat" type="number" step="0.0000001" required></label>
-            <label>Longitude <input name="lng" type="number" step="0.0000001" required></label>
+            <label>Breitengrad <input name="lat" type="number" step="0.0000001" required></label>
+            <label>Längengrad <input name="lng" type="number" step="0.0000001" required></label>
           </div>
           <p class="hint" id="pos-hint"></p>
           <div class="row wrap">
-            <button type="button" id="btn-pos-gps" class="btn small">Re-measure with GPS</button>
-            <button type="button" id="btn-pos-map" class="btn small">Adjust on map</button>
+            <button type="button" id="btn-pos-gps" class="btn small">Neu per GPS messen</button>
+            <button type="button" id="btn-pos-map" class="btn small">Auf Karte anpassen</button>
           </div>
         </fieldset>
 
-        <label>Trunk circumference at 1 m height (cm)
-          <input name="circumference" inputmode="decimal" placeholder="e.g. 112  ·  multi-stem: 45+38+30">
+        <label>Stammumfang in 1 m Höhe (cm)
+          <input name="circumference" inputmode="decimal" placeholder="z. B. 112  ·  mehrstämmig: 45+38+30">
         </label>
-        <p class="hint" id="circ-hint">Munich tree protection ordinance: protected from 80 cm circumference at 1 m height (multi-stem: sum of stems).</p>
+        <p class="hint" id="circ-hint">Münchner Baumschutzverordnung: geschützt ab 80 cm Stammumfang in 1 m Höhe (mehrstämmig: Summe der Stämme).</p>
 
         <div class="grid3">
-          <label>Height (m) <input name="height" type="number" step="0.1" min="0"></label>
-          <label>Crown Ø (m) <input name="crown" type="number" step="0.1" min="0"></label>
-          <label>Condition
+          <label>Höhe (m) <input name="height" type="number" step="0.1" min="0"></label>
+          <label>Krone Ø (m) <input name="crown" type="number" step="0.1" min="0"></label>
+          <label>Zustand
             <select name="condition">
               <option value="">–</option>
-              <option>good</option>
-              <option>fair</option>
-              <option>poor</option>
-              <option>dead</option>
+              <option>gut</option>
+              <option>mittel</option>
+              <option>schlecht</option>
+              <option>abgestorben</option>
             </select>
           </label>
         </div>
 
-        <label>Notes
-          <textarea name="notes" rows="3" placeholder="Damage, deadwood, fungi, cavities, planned measures…"></textarea>
+        <label>Notizen
+          <textarea name="notes" rows="3" placeholder="Schäden, Totholz, Pilze, Höhlungen, geplante Maßnahmen…"></textarea>
         </label>
 
         <fieldset>
-          <legend>Photos</legend>
+          <legend>Fotos</legend>
           <div id="photo-grid" class="photo-grid"></div>
           <div class="row wrap">
-            <label class="btn">📷 Camera
+            <label class="btn">📷 Kamera
               <input id="photo-camera" type="file" accept="image/*" capture="environment" hidden>
             </label>
-            <label class="btn">🖼 Choose files
+            <label class="btn">🖼 Dateien wählen
               <input id="photo-files" type="file" accept="image/*" multiple hidden>
             </label>
           </div>
-          <p class="hint">Photos are resized to max. 2400 px to save space.</p>
+          <p class="hint">Fotos werden auf max. 2400 px verkleinert, um Speicher zu sparen.</p>
         </fieldset>
       </div>
       <footer class="sheet-foot">
-        <button type="button" id="btn-delete" class="btn danger ghost">Delete</button>
+        <button type="button" id="btn-delete" class="btn danger ghost">Löschen</button>
         <span class="spacer"></span>
-        <button type="button" class="btn ghost" data-close>Cancel</button>
-        <button type="submit" class="btn primary">Save</button>
+        <button type="button" class="btn ghost" data-close>Abbrechen</button>
+        <button type="submit" class="btn primary">Speichern</button>
       </footer>
     </form>
   </dialog>
@@ -188,10 +188,10 @@
   <dialog id="viewer" class="viewer">
     <img id="viewer-img" alt="">
     <div class="viewer-bar">
-      <button id="viewer-prev" class="icon-btn" aria-label="Previous">‹</button>
+      <button id="viewer-prev" class="icon-btn" aria-label="Zurück">‹</button>
       <span id="viewer-caption"></span>
-      <button id="viewer-next" class="icon-btn" aria-label="Next">›</button>
-      <button id="viewer-close" class="icon-btn" aria-label="Close">✕</button>
+      <button id="viewer-next" class="icon-btn" aria-label="Weiter">›</button>
+      <button id="viewer-close" class="icon-btn" aria-label="Schließen">✕</button>
     </div>
   </dialog>
 

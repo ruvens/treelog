@@ -1,7 +1,8 @@
 {
-  "name": "Treelog – Tree inventory",
+  "lang": "de",
+  "name": "Treelog – Baumkataster",
   "short_name": "Treelog",
-  "description": "Tree inventory: position, circumference, species and photos.",
+  "description": "Baumkataster: Standort, Stammumfang, Baumart und Fotos.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

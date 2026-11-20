@@ -1,5 +1,5 @@
-// Offline support: app shell cache-first, map tiles cached as you browse.
-const VERSION = 'treelog-v1';
+// Offline-Unterstützung: App-Dateien und angesehene Kartenkacheln werden zwischengespeichert.
+const VERSION = 'treelog-v2';
 const SHELL = [
   './',
   'index.html',
