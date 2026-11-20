@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Treedoc</title>
+  <meta name="description" content="Tree inventory: position, circumference, species and photos.">
+  <meta name="theme-color" content="#2f6b3a">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img src="icons/icon.svg" alt="" width="28" height="28">
+      <div>
+        <h1>Treedoc</h1>
+        <p class="site" id="site-name">Tree inventory</p>
+      </div>
+    </div>
+    <nav class="tabs" role="tablist">
+      <button role="tab" data-view="map" class="active" aria-selected="true">Map</button>
+      <button role="tab" data-view="list" aria-selected="false">List <span id="count" class="badge">0</span></button>
+      <button role="tab" data-view="data" aria-selected="false">Data</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- MAP VIEW -->
+    <section id="view-map" class="view active">
+      <div id="map"></div>
+      <div class="map-tools">
+        <button id="btn-locate" class="fab secondary" title="Show my position">◎</button>
+        <button id="btn-site" class="fab secondary" title="Back to property">⌂</button>
+      </div>
+      <button id="btn-add" class="fab primary add" title="Add tree">＋ Tree</button>
+      <div id="placing" class="placing hidden">
+        <div class="crosshair" aria-hidden="true"></div>
+        <div class="placing-bar">
+          <p>Move the map so the crosshair sits on the trunk centre, or use GPS.</p>
+          <div class="row">
+            <button id="btn-place-gps" class="btn">Use GPS (averaged)</button>
+            <button id="btn-place-cancel" class="btn ghost">Cancel</button>
+            <button id="btn-place-ok" class="btn primary">Place here</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LIST VIEW -->
+    <section id="view-list" class="view">
+      <div class="list-head">
+        <input id="search" type="search" placeholder="Search number, species, notes…">
+        <select id="sort">
+          <option value="number">Sort: number</option>
+          <option value="species">Sort: species</option>
+          <option value="circ-desc">Sort: circumference ↓</option>
+          <option value="updated">Sort: last edited</option>
+        </select>
+      </div>
+      <div id="summary" class="summary"></div>
+      <ul id="tree-list" class="tree-list"></ul>
+    </section>
+
+    <!-- DATA VIEW -->
+    <section id="view-data" class="view">
+      <div class="card">
+        <h2>Backup &amp; export</h2>
+        <p>All data is stored <strong>only in this browser</strong> (IndexedDB). Export a full backup regularly and import it on other devices.</p>
+        <div class="row wrap">
+          <button id="btn-export-zip" class="btn primary">Full backup (.zip, incl. photos)</button>
+          <button id="btn-export-csv" class="btn">Table (.csv)</button>
+          <button id="btn-export-geojson" class="btn">GIS (.geojson)</button>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Import backup</h2>
+        <p>Imports a <code>.zip</code> created by "Full backup". Trees with the same ID are overwritten by the newer version.</p>
+        <input id="import-file" type="file" accept=".zip,application/zip">
+      </div>
+      <div class="card">
+        <h2>Property</h2>
+        <p>The address is stored only in this browser and in your backups.</p>
+        <div class="row">
+          <input id="site-address" type="text" placeholder="Street no., city" autocomplete="street-address">
+          <button id="btn-site-geocode" class="btn">Find</button>
+        </div>
+        <p>Map centre used for "back to property": <span id="site-coords"></span></p>
+        <button id="btn-site-set" class="btn">Use current map centre</button>
+      </div>
+      <div class="card">
+        <h2>Storage</h2>
+        <p id="storage-info">–</p>
+        <button id="btn-persist" class="btn">Ask browser to keep data permanently</button>
+      </div>
+      <div class="card danger-zone">
+        <h2>Danger zone</h2>
+        <button id="btn-wipe" class="btn danger">Delete all trees and photos</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- TREE EDITOR -->
+  <dialog id="editor" class="sheet">
+    <form id="tree-form" method="dialog" autocomplete="off">
+      <header class="sheet-head">
+        <h2 id="editor-title">Tree</h2>
+        <button type="button" class="icon-btn" data-close aria-label="Close">✕</button>
+      </header>
+      <div class="sheet-body">
+        <div class="grid2">
+          <label>Tree no.
+            <input name="number" required inputmode="numeric" placeholder="e.g. 7">
+          </label>
+          <label>Date surveyed
+            <input name="surveyed" type="date">
+          </label>
+        </div>
+
+        <label>Species
+          <input name="species" list="species-list" placeholder="e.g. Acer platanoides – Spitz-Ahorn">
+        </label>
+        <datalist id="species-list"></datalist>
+
+        <fieldset class="pos">
+          <legend>Position (WGS84)</legend>
+          <div class="grid2">
+            <label>Latitude <input name="lat" type="number" step="0.0000001" required></label>
+            <label>Longitude <input name="lng" type="number" step="0.0000001" required></label>
+          </div>
+          <p class="hint" id="pos-hint"></p>
+          <div class="row wrap">
+            <button type="button" id="btn-pos-gps" class="btn small">Re-measure with GPS</button>
+            <button type="button" id="btn-pos-map" class="btn small">Adjust on map</button>
+          </div>
+        </fieldset>
+
+        <label>Trunk circumference at 1 m height (cm)
+          <input name="circumference" inputmode="decimal" placeholder="e.g. 112  ·  multi-stem: 45+38+30">
+        </label>
+        <p class="hint" id="circ-hint">Munich tree protection ordinance: protected from 80 cm circumference at 1 m height (multi-stem: sum of stems).</p>
+
+        <div class="grid3">
+          <label>Height (m) <input name="height" type="number" step="0.1" min="0"></label>
+          <label>Crown Ø (m) <input name="crown" type="number" step="0.1" min="0"></label>
+          <label>Condition
+            <select name="condition">
+              <option value="">–</option>
+              <option>good</option>
+              <option>fair</option>
+              <option>poor</option>
+              <option>dead</option>
+            </select>
+          </label>
+        </div>
+
+        <label>Notes
+          <textarea name="notes" rows="3" placeholder="Damage, deadwood, fungi, cavities, planned measures…"></textarea>
+        </label>
+
+        <fieldset>
+          <legend>Photos</legend>
+          <div id="photo-grid" class="photo-grid"></div>
+          <div class="row wrap">
+            <label class="btn">📷 Camera
+              <input id="photo-camera" type="file" accept="image/*" capture="environment" hidden>
+            </label>
+            <label class="btn">🖼 Choose files
+              <input id="photo-files" type="file" accept="image/*" multiple hidden>
+            </label>
+          </div>
+          <p class="hint">Photos are resized to max. 2400 px to save space.</p>
+        </fieldset>
+      </div>
+      <footer class="sheet-foot">
+        <button type="button" id="btn-delete" class="btn danger ghost">Delete</button>
+        <span class="spacer"></span>
+        <button type="button" class="btn ghost" data-close>Cancel</button>
+        <button type="submit" class="btn primary">Save</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- PHOTO VIEWER -->
+  <dialog id="viewer" class="viewer">
+    <img id="viewer-img" alt="">
+    <div class="viewer-bar">
+      <button id="viewer-prev" class="icon-btn" aria-label="Previous">‹</button>
+      <span id="viewer-caption"></span>
+      <button id="viewer-next" class="icon-btn" aria-label="Next">›</button>
+      <button id="viewer-close" class="icon-btn" aria-label="Close">✕</button>
+    </div>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="vendor/leaflet/leaflet.js"></script>
+  <script src="vendor/jszip/jszip.min.js"></script>
+  <script src="js/species.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
